@@ -39,6 +39,7 @@ const App = () => {
               };
             });
             document.cookie = json.cookie;
+            window.location.href = window.location.href.split("?")[0];
             return;
           }
           setUser({ data: null, state: "unauthenticated" });

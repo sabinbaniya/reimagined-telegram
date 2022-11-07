@@ -1,10 +1,14 @@
 import Layout from "../components/Layout";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import Cookies from "js-cookie";
+import { useUserContext } from "../context/CurrentUserContext";
+import { useNavigate } from "react-router-dom";
 
 const Create = () => {
   const [value, setValue] = useState<string | undefined>("");
+  const { user } = useUserContext();
+  const navigate = useNavigate();
 
   const [apiStatus, setApiStatus] = useState({
     loading: false,
@@ -40,13 +44,52 @@ const Create = () => {
               }),
             }
           );
-          console.log(await res.json());
+          const json = await res.json();
+          if (json.success) {
+            setApiStatus((prev) => {
+              return {
+                ...prev,
+                loading: false,
+                message: "saved",
+              };
+            });
+
+            return (
+              setTimeout(() =>
+                setApiStatus({ message: "", loading: false, error: "" })
+              ),
+              2000
+            );
+          }
+
+          setApiStatus((prev) => {
+            return {
+              ...prev,
+              loading: false,
+              error: "error",
+            };
+          });
+          return setTimeout(
+            () => setApiStatus({ message: "", loading: false, error: "" }),
+            2000
+          );
         })();
-      } catch (error) {}
+      } catch (error) {
+        return setTimeout(
+          () => setApiStatus({ message: "", loading: false, error: "" }),
+          2000
+        );
+      }
     }, 1000);
     setValue(val);
     // write logic to save the post on users behalf to db
   };
+
+  useEffect(() => {
+    if (user.state === "loading") return;
+
+    if (user.state === "unauthenticated") return navigate("/");
+  }, [user.state]);
 
   return (
     <>
@@ -59,6 +102,11 @@ const Create = () => {
         <br />
         <MDEditor value={value} onChange={handleChange} />
         <br />
+        <div>
+          {apiStatus.loading && "saving..."}
+          {apiStatus.message}
+          {apiStatus.error}
+        </div>
       </Layout>
     </>
   );

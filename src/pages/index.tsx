@@ -62,7 +62,7 @@ const Index = () => {
       <Layout>
         <p className='text-center my-6 text-2xl font-black'>Lastest Writes</p>
         <div className='flex flex-wrap justify-start items-center gap-4'>
-          {respons.data?.map((el) => (
+          {blogPosts?.map((el) => (
             <div className='bg-gray-800 rounded-tr-2xl rounded-bl-2xl rounded-sm p-4 grid grid-rows-2 '>
               <div className='overflow-hidden text-ellipsis '>
                 <MDEditor.Markdown
