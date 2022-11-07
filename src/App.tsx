@@ -1,26 +1,66 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { useUserContext } from "./context/CurrentUserContext";
+import Index from "./pages";
+import Error from "./pages/404";
+import Create from "./pages/create";
+import { parseJwt } from "./context/CurrentUserContext";
 
-function App() {
+const App = () => {
+  const code = window.location.href.split("code=")[1];
+  const { setUser } = useUserContext();
+
+  useEffect(() => {
+    if (code) {
+      setUser((prev) => {
+        return {
+          ...prev,
+          state: "loading",
+        };
+      });
+      (async () => {
+        try {
+          const res = await fetch(
+            "https://blog-app2321.herokuapp.com/api/auth/github",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ code }),
+            }
+          );
+          const json = await res.json();
+          if (json.status === "success") {
+            setUser((prev) => {
+              return {
+                ...parseJwt(json.cookie),
+                state: "authenticated",
+              };
+            });
+            document.cookie = json.cookie;
+            return;
+          }
+          setUser({ data: null, state: "unauthenticated" });
+          console.log(json);
+        } catch (error) {
+          setUser({ data: null, state: "unauthenticated" });
+        }
+      })();
+    }
+
+    //eslint-disable-next-line
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path='/' element={<Index />}></Route>
+        <Route path='/create' element={<Create />}></Route>
+        <Route path='*' element={<Error />}></Route>
+      </Routes>
+    </>
   );
-}
+};
 
 export default App;
