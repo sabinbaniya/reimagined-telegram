@@ -5,6 +5,7 @@ import Index from "./pages";
 import Error from "./pages/404";
 import Create from "./pages/create";
 import { parseJwt } from "./context/CurrentUserContext";
+import Posts from "./pages/posts";
 
 const App = () => {
   const code = window.location.href.split("code=")[1];
@@ -57,6 +58,7 @@ const App = () => {
     <>
       <Routes>
         <Route path='/' element={<Index />}></Route>
+        <Route path='/posts/:id' element={<Posts />}></Route>
         <Route path='/create' element={<Create />}></Route>
         <Route path='*' element={<Error />}></Route>
       </Routes>

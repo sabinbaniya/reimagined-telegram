@@ -5,6 +5,19 @@ body {
   font-family: "Poppins", sans-serif;
   @apply bg-slate-900 text-slate-200;
 }
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: gray; /* color of the scroll thumb */
+  border-radius: 20px; /*  roundness of the scroll thumb  */
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

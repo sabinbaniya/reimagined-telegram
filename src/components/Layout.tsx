@@ -10,8 +10,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
     window.location.href = `https://github.com/login/oauth/authorize?client_id=ba8afc4a26d4e6d97c96&redirect_uri=${window.location.href}`;
   };
   return (
-    <section className='px-4'>
-      <nav className='flex h-20 items-center justify-between border-b-[0.2px] border-b-gray-500'>
+    <section className='px-4 relative'>
+      <nav className='flex h-20 items-center justify-between border-b-[0.2px] border-b-gray-500 fixed w-[calc(100vw-34px)] backdrop-blur-sm z-20 lg:max-w-5xl lg:left-1/2 lg:-translate-x-1/2'>
         <Link to='/' className='text-3xl font-black'>
           Blog
         </Link>
@@ -37,7 +37,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
           </div>
         )}
       </nav>
-      <main>{children}</main>
+      <main className='py-20 overflow-x-hidden min-h-screen relative'>
+        {children}
+      </main>
     </section>
   );
 };

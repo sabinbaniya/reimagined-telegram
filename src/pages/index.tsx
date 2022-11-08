@@ -1,8 +1,10 @@
 import Layout from "../components/Layout";
 import { useEffect, useState } from "react";
-import MDEditor from "@uiw/react-md-editor";
+import { ClipLoader } from "react-spinners";
+import reactToText from "react-to-text";
+import { Link } from "react-router-dom";
 
-interface BlogPost {
+export interface BlogPost {
   body: string;
   createdAt: string;
   image: string;
@@ -11,76 +13,116 @@ interface BlogPost {
   uid: number;
   updatedAt: string;
   _id: string;
+  __v: number;
 }
-
-const respons = {
-  success: true,
-  data: [
-    {
-      _id: "636938317ac911b89f5f4ca9",
-      title: " Title ",
-      uid: 84828938,
-      body: "# Title #\nBlog 1 blog2 ",
-      image: "https://avatars.githubusercontent.com/u/84828938?v=4",
-      name: "Sabin Baniya",
-      createdAt: "2022-11-07T16:54:09.946Z",
-      updatedAt: "2022-11-07T16:54:09.946Z",
-      __v: 0,
-    },
-    {
-      _id: "636938607ac911b89f5f4cac",
-      title: " My Blog ",
-      uid: 84828938,
-      body: "# My Blog #\nHi guys",
-      image: "https://avatars.githubusercontent.com/u/84828938?v=4",
-      name: "Sabin Baniya",
-      createdAt: "2022-11-07T16:54:56.964Z",
-      updatedAt: "2022-11-07T16:54:56.964Z",
-      __v: 0,
-    },
-  ],
-};
 
 const Index = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[] | null>(null);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    hasMore: true,
+  });
 
   useEffect(() => {
+    setBlogPosts(null);
     (async () => {
-      console.log("first");
       const res = await fetch(
-        "https://blog-app2321.herokuapp.com/api/posts/getAllPosts"
+        `${process.env.REACT_APP_REQUEST_URL}/api/posts/getAllPosts?page=${pagination.page}`
       );
       const json: { success: boolean; data: BlogPost[] } = await res.json();
+      if (json.data.length === 0) {
+        setPagination((prev) => {
+          return {
+            ...prev,
+            hasMore: false,
+          };
+        });
+      } else {
+        setPagination((prev) => {
+          return {
+            ...prev,
+            hasMore: true,
+          };
+        });
+      }
       setBlogPosts(json.data);
-      // setBlogPosts(respons.data);
-      console.log(json);
     })();
-  }, []);
+  }, [pagination.page]);
 
   return (
     <>
       <Layout>
         <p className='text-center my-6 text-2xl font-black'>Lastest Writes</p>
-        <div className='flex flex-wrap justify-start items-center gap-4'>
+        <div className='flex justify-center items-center w-full'>
+          <ClipLoader color='#36d7b7' loading={!blogPosts} size={60} />
+        </div>
+        <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 lg:max-w-5xl lg:mx-auto'>
+          {!pagination.hasMore && (
+            <h3 className='text-xl font-medium text-center col-span-full my-4'>
+              You have reached the end 📖
+            </h3>
+          )}
           {blogPosts?.map((el) => (
-            <div className='bg-gray-800 rounded-tr-2xl rounded-bl-2xl rounded-sm p-4 grid grid-rows-2 '>
-              <div className='overflow-hidden text-ellipsis '>
-                <MDEditor.Markdown
-                  source={el.body}
-                  style={{ background: "transparent" }}
-                />
-              </div>
-              <div className='row-start-2 pt-2 justify-self-end'>
-                <div className='flex justify-center items-end space-x-2'>
-                  <img src={el.image} alt='' className='w-10 rounded-md' />
-                  <div>
-                    <p>{el.title}</p>
-                    <p>{el.name}</p>
+            <Link key={el._id} to={`/posts/${el._id}`}>
+              <div className='bg-gray-800 rounded-2xl p-4 grid grid-rows-4 h-60 sm:hover:-translate-y-1 transition-all cursor-pointer group'>
+                <div>
+                  <p className='overflow-hidden text-ellipsis'>{el.title}</p>
+                </div>
+                <div className='grid-row-start-1 overflow-hidden text-ellipsis '>
+                  {reactToText(el.body)}
+                </div>
+                <div className='row-start-4 pt-2 '>
+                  <div className='flex justify-between w-full items-end'>
+                    <div className='flex items-end space-x-2'>
+                      <img src={el.image} alt='' className='w-10 rounded-md' />
+                      <div>
+                        <p>{el.name}</p>
+                      </div>
+                    </div>
+                    <div className='sm:hidden'>
+                      {new Date(el.createdAt || "").toDateString()}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
+        </div>
+        <div className='pt-8'>
+          <div className='absolute bottom-10 flex justify-between items-center w-full lg:max-w-5xl lg:left-1/2 lg:-translate-x-1/2 px-0.5'>
+            <button
+              className={`bg-slate-800 relative px-4 py-2 rounded-md font-medium group focus:outline-gray-400 focus:outline-dashed ${
+                pagination.page > 0 ? "" : "opacity-50 pointer-events-none"
+              }`}
+              onClick={() =>
+                pagination.page > 0
+                  ? setPagination((prev) => {
+                      return { ...prev, page: prev.page - 1 };
+                    })
+                  : null
+              }>
+              <span className='absolute left-4 group group-hover:left-3 transition-all top-1/2 -translate-y-1/2'>
+                &lt;
+              </span>
+              <span className='pl-4'>Prev</span>
+            </button>
+            <button
+              className={`bg-slate-800 relative px-4 py-2 rounded-md font-medium group focus:outline-gray-400 focus:outline-dashed ${
+                pagination.hasMore ? "" : "opacity-50 pointer-events-none"
+              }`}
+              onClick={() =>
+                pagination.hasMore
+                  ? setPagination((prev) => {
+                      return { ...prev, page: prev.page + 1 };
+                    })
+                  : null
+              }>
+              <span className='pr-4'>Next</span>
+              <span className='absolute right-4 group group-hover:right-3 transition-all top-1/2 -translate-y-1/2'>
+                &gt;
+              </span>
+            </button>
+          </div>
         </div>
       </Layout>
     </>
