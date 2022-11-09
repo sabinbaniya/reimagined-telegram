@@ -67,11 +67,13 @@ const Index = () => {
           )}
           {blogPosts?.map((el) => (
             <Link key={el._id} to={`/posts/${el._id}`}>
-              <div className='bg-gray-800 rounded-2xl p-4 grid grid-rows-4 h-60 sm:hover:-translate-y-1 transition-all cursor-pointer group'>
+              <div className='bg-gray-800 rounded-2xl p-4 grid grid-rows-4 h-60 sm:hover:outline-dashed sm:hover:outline-gray-500 cursor-pointer group'>
                 <div>
-                  <p className='overflow-hidden text-ellipsis'>{el.title}</p>
+                  <p className='overflow-hidden text-ellipsis text-xl font-semibold'>
+                    {el.title}
+                  </p>
                 </div>
-                <div className='grid-row-start-1 overflow-hidden text-ellipsis '>
+                <div className='grid-row-start-1 overflow-hidden text-ellipsis text-sm text-gray-400'>
                   {reactToText(el.body)}
                 </div>
                 <div className='row-start-4 pt-2 '>
@@ -80,10 +82,10 @@ const Index = () => {
                       <img src={el.image} alt='' className='w-10 rounded-md' />
                       <div>
                         <p>{el.name}</p>
+                        <div className='text-xs text-gray-500'>
+                          {new Date(el.createdAt || "").toDateString()}
+                        </div>
                       </div>
-                    </div>
-                    <div className='sm:hidden'>
-                      {new Date(el.createdAt || "").toDateString()}
                     </div>
                   </div>
                 </div>
