@@ -1,10 +1,11 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaGithub } from "react-icons/fa";
 import { IoCreate } from "react-icons/io5";
 import { useUserContext } from "../context/CurrentUserContext";
 
 const Layout = ({ children }: { children: ReactNode }) => {
+  const location = useLocation();
   const { user } = useUserContext();
   const handleGithubLogin = () => {
     window.location.href = `https://github.com/login/oauth/authorize?client_id=ba8afc4a26d4e6d97c96&redirect_uri=${window.location.href}`;
@@ -13,7 +14,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <section className='px-4 relative'>
       <nav className='flex h-20 items-center justify-between border-b-[0.2px] border-b-gray-500 fixed w-[calc(100vw-34px)] backdrop-blur-sm z-20 lg:max-w-5xl lg:left-1/2 lg:-translate-x-1/2'>
         <Link to='/' className='text-3xl font-black'>
-          Blog
+          Blog {location.pathname.endsWith("create") && " | Create"}
         </Link>
         {user.state !== "authenticated" ? (
           <button

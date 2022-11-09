@@ -14,6 +14,7 @@ export interface BlogPost {
   updatedAt: string;
   _id: string;
   __v: number;
+  visibility: "private" | "public";
 }
 
 const Index = () => {
@@ -22,6 +23,8 @@ const Index = () => {
     page: 0,
     hasMore: true,
   });
+
+  document.title = "Latest Blogs from Everyone 🌍";
 
   useEffect(() => {
     setBlogPosts(null);

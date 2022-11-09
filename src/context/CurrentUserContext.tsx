@@ -2,8 +2,15 @@ import { createContext, useState, useContext, useEffect } from "react";
 import type { ReactNode, Dispatch, SetStateAction } from "react";
 import cookie from "js-cookie";
 
+interface UserData {
+  github_join_date: string;
+  iat: number;
+  image: string;
+  name: string;
+  uid: number;
+}
 interface User {
-  data: null | ({} & { name: string; image: string });
+  data: null | UserData;
   state: "loading" | "authenticated" | "unauthenticated";
 }
 
