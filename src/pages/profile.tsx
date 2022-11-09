@@ -37,7 +37,7 @@ const Profile = () => {
         if (json.success) {
           setPosts(json.data);
         }
-        console.log(json);
+        // console.log(json);
       } catch (error) {}
     })();
     //eslint-disable-next-line

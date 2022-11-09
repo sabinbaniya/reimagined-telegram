@@ -39,7 +39,7 @@ const Create = () => {
       // send request to server as user has finsihed typing
       try {
         (async () => {
-          console.log(val);
+          // console.log(val);
           let res;
           if (!postId) {
             res = await fetch(
@@ -237,7 +237,7 @@ const Create = () => {
     if (postId?.length === 24 && !post) {
       (async () => {
         try {
-          console.log("called");
+          // console.log("called");
           const res = await fetch(
             `${process.env.REACT_APP_REQUEST_URL}/api/posts/create/getPostDetail/${postId}`,
             {
@@ -252,9 +252,12 @@ const Create = () => {
           );
           const json: { success: boolean; data: BlogPost | string } =
             await res.json();
-          console.log(json);
+          // console.log(json);
           if (json.success === true) {
-            if (json.data === "Post is private") {
+            if (
+              json.data === "Post is private" ||
+              json.data === "No post found"
+            ) {
               return navigate("/");
             }
             document.title = (json.data as BlogPost).title;
@@ -272,6 +275,7 @@ const Create = () => {
                 loading: false,
               };
             });
+            // console.log(titleInputRef.current);
             if (titleInputRef.current)
               titleInputRef.current.innerText = (json.data as BlogPost).title;
           }
@@ -294,30 +298,34 @@ const Create = () => {
               className=' mt-8'
             />
           </div>
+
+          <div
+            className={`${
+              !(postId?.length === 24 && !post) ? "block" : "hidden"
+            }`}>
+            <span
+              ref={titleInputRef}
+              onFocus={(e) => {
+                if (e.target.innerText === "Give it a title") {
+                  e.target.innerText = "";
+                }
+              }}
+              onBlur={(e) => {
+                if (e.target.innerText === "") {
+                  e.target.innerText = "Give it a title";
+                } else {
+                  handleTitleChange();
+                }
+              }}
+              role={"textbox"}
+              contentEditable
+              suppressContentEditableWarning={true}
+              className='inline-block min-w-[150px] focus:outline focus:outline-gray-400 bg-transparent py-1 focus:outline-none rounded-md ml-1 text-4xl focus:text-base transition-all focus:px-4'>
+              Give it a title
+            </span>
+          </div>
           {!(postId?.length === 24 && !post) && (
             <>
-              <div>
-                <span
-                  ref={titleInputRef}
-                  onFocus={(e) => {
-                    if (e.target.innerText === "Give it a title") {
-                      e.target.innerText = "";
-                    }
-                  }}
-                  onBlur={(e) => {
-                    if (e.target.innerText === "") {
-                      e.target.innerText = "Give it a title";
-                    } else {
-                      handleTitleChange();
-                    }
-                  }}
-                  role={"textbox"}
-                  contentEditable
-                  suppressContentEditableWarning={true}
-                  className='inline-block min-w-[150px] focus:outline focus:outline-gray-400 bg-transparent py-1 focus:outline-none rounded-md ml-1 text-4xl focus:text-base transition-all focus:px-4'>
-                  Give it a title
-                </span>
-              </div>
               <br />
               <MDEditor
                 height={400}

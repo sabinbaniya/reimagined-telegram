@@ -71,7 +71,7 @@ const UserContextProvider = ({ children }: { children: ReactNode }) => {
             return;
           }
           setUser({ data: null, state: "unauthenticated" });
-          console.log(json);
+          // console.log(json);
         } catch (error) {
           setUser({ data: null, state: "unauthenticated" });
         }

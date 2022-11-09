@@ -30,9 +30,12 @@ const Posts = () => {
         );
         const json: { success: boolean; data: BlogPost | string } =
           await res.json();
-        console.log(json);
+        // console.log(json);
         if (json.success === true) {
-          if (json.data === "Post is private") {
+          if (
+            json.data === "Post is private" ||
+            json.data === "No post found"
+          ) {
             return navigate("/");
           } else {
             document.title = (json.data as BlogPost).title;
