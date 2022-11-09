@@ -46,20 +46,24 @@ const Posts = () => {
   }, []);
 
   useEffect(() => {
-    const copyBtn = document.getElementsByClassName("copied")[0];
-    copyBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(copyBtn.getAttribute("data-code") || "");
+    const copyBtn = document?.getElementsByClassName("copied")[0];
+    if (!copyBtn) return;
+    copyBtn?.addEventListener("click", () => {
+      navigator?.clipboard?.writeText(copyBtn.getAttribute("data-code") || "");
     });
-  }, []);
-
-  console.log(user);
+  }, [post]);
 
   return (
     <>
       <Layout>
         <section className='lg:max-w-5xl lg:mx-auto'>
           <div className='flex justify-center items-center w-full'>
-            <ClipLoader color='#36d7b7' loading={!post} size={60} />
+            <ClipLoader
+              color='#36d7b7'
+              loading={!post}
+              size={60}
+              className=' mt-8'
+            />
           </div>
           <div className='pt-8'>
             <h1 className='text-5xl pb-4 leading-[60px]'>{post?.title}</h1>
