@@ -80,6 +80,8 @@ const Create = () => {
             if (json.created) {
               setApiStatus("New post created successfully");
               setPostId(json.data._id);
+              setPost(json.data);
+              // window.history.replaceState(null, "", `./${json.data._id}`);
               navigate(`./${json.data._id}`);
             }
           } else {
@@ -285,6 +287,8 @@ const Create = () => {
 
     //eslint-disable-next-line
   }, [user.state]);
+
+  // console.log(post);
 
   return (
     <>
