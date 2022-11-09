@@ -45,6 +45,13 @@ const Posts = () => {
     //eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    const copyBtn = document.getElementsByClassName("copied")[0];
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(copyBtn.getAttribute("data-code") || "");
+    });
+  }, []);
+
   console.log(user);
 
   return (
