@@ -57,9 +57,10 @@ const Posts = () => {
           <div className='pt-8'>
             <h1 className='text-5xl pb-4'>{post?.title}</h1>
             <span className='text-gray-500 text-sm font-bold pl-1'>
-              ✍️ {post?.createdAt && new Date(post?.createdAt).toDateString()}
+              {post?.createdAt &&
+                "✍️" + new Date(post?.createdAt).toDateString()}
             </span>
-            {post?.uid === user.data?.uid && (
+            {post && post?.uid === user.data?.uid && (
               <Link to={`/create/${postId}`} className='ml-4 underline'>
                 Edit
               </Link>
