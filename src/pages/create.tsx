@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useUserContext } from "../context/CurrentUserContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BlogPost } from ".";
+import { ClipLoader } from "react-spinners";
 
 const Create = () => {
   const [value, setValue] = useState<string | undefined>();
@@ -285,53 +286,65 @@ const Create = () => {
     <>
       <Layout>
         <section className='lg:max-w-5xl lg:mx-auto pt-10'>
-          <div>
-            <span
-              ref={titleInputRef}
-              onFocus={(e) => {
-                if (e.target.innerText === "Give it a title") {
-                  e.target.innerText = "";
-                }
-              }}
-              onBlur={(e) => {
-                if (e.target.innerText === "") {
-                  e.target.innerText = "Give it a title";
-                } else {
-                  handleTitleChange();
-                }
-              }}
-              role={"textbox"}
-              contentEditable
-              suppressContentEditableWarning={true}
-              className='inline-block min-w-[150px] focus:outline focus:outline-gray-400 bg-transparent py-1 focus:outline-none rounded-md ml-1 text-4xl focus:text-base transition-all focus:px-4'>
-              Give it a title
-            </span>
+          <div className='flex justify-center items-center w-full'>
+            <ClipLoader
+              color='#36d7b7'
+              loading={postId?.length === 24 && !post}
+              size={60}
+              className=' mt-8'
+            />
           </div>
-          <br />
-          <MDEditor
-            height={400}
-            value={value}
-            onChange={handleChange}></MDEditor>
-          <div className='text-sm my-4 text-gray-300 flex items-center'>
-            <p className='min-w-[60px]'>
-              {privateVisibility.data ? "Private" : "Public"}
-            </p>
-            <button
-              onClick={() => {
-                handleVisibiltyChange();
-              }}
-              className={`w-10 focus:outline-none transition-all h-6 bg-gray-100 px-0.5 rounded-full inline-flex items-center ${
-                privateVisibility.data ? "justify-end" : "justify-start"
-              } ${
-                !privateVisibility.loading
-                  ? ""
-                  : "opacity-50 pointer-events-none"
-              }`}>
-              <span className='bg-blue-500 w-5 h-5 block rounded-full transition-all'></span>
-            </button>
-          </div>
-          <br />
-          <div>{apiStatus}</div>
+          {!(postId?.length === 24 && !post) && (
+            <>
+              <div>
+                <span
+                  ref={titleInputRef}
+                  onFocus={(e) => {
+                    if (e.target.innerText === "Give it a title") {
+                      e.target.innerText = "";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (e.target.innerText === "") {
+                      e.target.innerText = "Give it a title";
+                    } else {
+                      handleTitleChange();
+                    }
+                  }}
+                  role={"textbox"}
+                  contentEditable
+                  suppressContentEditableWarning={true}
+                  className='inline-block min-w-[150px] focus:outline focus:outline-gray-400 bg-transparent py-1 focus:outline-none rounded-md ml-1 text-4xl focus:text-base transition-all focus:px-4'>
+                  Give it a title
+                </span>
+              </div>
+              <br />
+              <MDEditor
+                height={400}
+                value={value}
+                onChange={handleChange}></MDEditor>
+              <div className='text-sm my-4 text-gray-300 flex items-center'>
+                <p className='min-w-[60px]'>
+                  {privateVisibility.data ? "Private" : "Public"}
+                </p>
+                <button
+                  onClick={() => {
+                    handleVisibiltyChange();
+                  }}
+                  className={`w-10 focus:outline-none transition-all h-6 bg-gray-100 px-0.5 rounded-full inline-flex items-center ${
+                    privateVisibility.data ? "justify-end" : "justify-start"
+                  } ${
+                    !privateVisibility.loading
+                      ? ""
+                      : "opacity-50 pointer-events-none"
+                  }`}>
+                  <span className='bg-blue-500 w-5 h-5 block rounded-full transition-all'></span>
+                </button>
+              </div>
+              <br />
+              <div>{apiStatus}</div>
+            </>
+          )}
         </section>
       </Layout>
     </>
