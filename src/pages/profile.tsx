@@ -100,9 +100,14 @@ const Profile = () => {
                         <div className='flex justify-between w-full items-end'>
                           <div className='space-y-2'>
                             <div className='flex space-x-2 items-end'>
-                              <Link to={`/create/${el._id}`} title='Edit'>
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  navigate(`/create/${el._id}`);
+                                }}
+                                title='Edit'>
                                 <AiFillEdit className='text-xl hover:text-gray-400 transition-all' />
-                              </Link>
+                              </button>
                               <button
                                 onClick={(e) => handleDelete(e, el._id)}
                                 title='Delete'>
