@@ -155,18 +155,18 @@ const Create = () => {
   };
 
   const handleVisibiltyChange = () => {
+    if (titleInputRef?.current?.innerText === "Give it a title") {
+      return setApiStatus("Give it a title to save");
+    }
+
+    if (timer.current) clearTimeout(timer.current);
+
     setprivateVisibility((prev) => {
       return {
         ...prev,
         loading: true,
       };
     });
-
-    if (titleInputRef?.current?.innerText === "Give it a title") {
-      return setApiStatus("Give it a title to save");
-    }
-
-    if (timer.current) clearTimeout(timer.current);
 
     timer.current = setTimeout(() => {
       setApiStatus("Saving...");
@@ -283,6 +283,8 @@ const Create = () => {
           }
         } catch (error) {}
       })();
+    } else {
+      setprivateVisibility({ data: true, loading: false });
     }
 
     //eslint-disable-next-line
