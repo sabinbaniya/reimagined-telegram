@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 import { useUserContext } from "../context/CurrentUserContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BlogPost } from ".";
-import { isGeneratorFunction } from "util/types";
 
 const Create = () => {
   const [value, setValue] = useState<string | undefined>();
