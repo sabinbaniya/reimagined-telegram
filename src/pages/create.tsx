@@ -38,22 +38,40 @@ const Create = () => {
       // send request to server as user has finsihed typing
       try {
         (async () => {
-          // console.log(val);
-          const res = await fetch(
-            `${process.env.REACT_APP_REQUEST_URL}/api/posts/create`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                _id: postId,
-                title: titleInputRef.current?.innerText || "No title",
-                text: val,
-                token: Cookies.get("access_token"),
-              }),
-            }
-          );
+          console.log(val);
+          let res;
+          if (!postId) {
+            res = await fetch(
+              `${process.env.REACT_APP_REQUEST_URL}/api/posts/create`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  _id: postId,
+                  text: val,
+                  title: titleInputRef.current?.innerText,
+                  token: Cookies.get("access_token"),
+                }),
+              }
+            );
+          } else {
+            res = await fetch(
+              `${process.env.REACT_APP_REQUEST_URL}/api/posts/update`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  _id: postId,
+                  text: val,
+                  token: Cookies.get("access_token"),
+                }),
+              }
+            );
+          }
 
           const json = await res.json();
           if (json.success) {
@@ -83,6 +101,7 @@ const Create = () => {
   };
 
   const handleTitleChange = () => {
+    if (!postId) return;
     // console.log("first");
     if (titleInputRef?.current?.innerText === "Give it a title") {
       return setApiStatus("Give it a title to save");
@@ -94,9 +113,9 @@ const Create = () => {
     timer.current = setTimeout(() => {
       setApiStatus("Saving...");
       // send request to server as user has finsihed typing
-      try {
-        (async () => {
-          // console.log(val);
+      (async () => {
+        // console.log(val);
+        try {
           const res = await fetch(
             `${process.env.REACT_APP_REQUEST_URL}/api/posts/update`,
             {
@@ -121,14 +140,14 @@ const Create = () => {
           setTimeout(() => {
             setApiStatus("");
           }, 2000);
-        })();
-      } catch (error) {
-        console.log(error);
-        setApiStatus("Error Occured, When trying to save");
-        setTimeout(() => {
-          setApiStatus("");
-        }, 2000);
-      }
+        } catch (error) {
+          console.log(error);
+          setApiStatus("Error Occured, When trying to save");
+          setTimeout(() => {
+            setApiStatus("");
+          }, 2000);
+        }
+      })();
     }, 1000);
   };
 

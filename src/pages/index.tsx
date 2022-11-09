@@ -67,13 +67,13 @@ const Index = () => {
           )}
           {blogPosts?.map((el) => (
             <Link key={el._id} to={`/posts/${el._id}`}>
-              <div className='bg-gray-800 rounded-2xl p-4 grid grid-rows-4 h-60 sm:hover:outline-dashed sm:hover:outline-gray-500 cursor-pointer group'>
+              <div className='bg-gray-800 rounded-2xl p-4 grid grid-rows-4 min-h-[15rem] sm:hover:outline-dashed sm:hover:outline-gray-500 cursor-pointer group items-stretch'>
                 <div>
-                  <p className='overflow-hidden text-ellipsis text-xl font-semibold'>
+                  <p className='blog-title h-14 max-h-[64px] text-xl font-semibold'>
                     {el.title}
                   </p>
                 </div>
-                <div className='grid-row-start-1 overflow-hidden text-ellipsis text-sm text-gray-400'>
+                <div className='blog-body grid-row-start-1 row-span-2 max-h-[80px] text-sm text-gray-400'>
                   {reactToText(el.body)}
                 </div>
                 <div className='row-start-4 pt-2 '>

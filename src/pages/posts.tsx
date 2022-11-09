@@ -55,7 +55,7 @@ const Posts = () => {
             <ClipLoader color='#36d7b7' loading={!post} size={60} />
           </div>
           <div className='pt-8'>
-            <h1 className='text-5xl pb-4'>{post?.title}</h1>
+            <h1 className='text-5xl pb-4 leading-[60px]'>{post?.title}</h1>
             <span className='text-gray-500 text-sm font-bold pl-1'>
               {post?.createdAt &&
                 "✍️" + new Date(post?.createdAt).toDateString()}
@@ -71,12 +71,24 @@ const Posts = () => {
                 source={post?.body}
               />
             </div>
-            <div className='mt-4'>
-              {(post?.__v || 0) > 0
-                ? "Last Updated on " +
-                  (post?.updatedAt &&
-                    new Date(post?.updatedAt).toLocaleString())
-                : null}
+            <br />
+            <br />
+            <br />
+
+            <div className='mt-4 flex justify-start items-center space-x-4'>
+              <div>
+                <img className='w-12 rounded-lg' src={post?.image} alt='' />
+              </div>
+              <div>
+                {post?.name}
+                <div className='mt-2 text-xs'>
+                  {post?.createdAt !== post?.updatedAt
+                    ? "Last Updated on " +
+                      (post?.updatedAt &&
+                        new Date(post?.updatedAt).toLocaleString())
+                    : null}
+                </div>
+              </div>
             </div>
           </div>
         </section>
