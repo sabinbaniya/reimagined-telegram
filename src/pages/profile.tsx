@@ -8,6 +8,8 @@ import { BlogPost } from ".";
 import { ClipLoader } from "react-spinners";
 import reactToText from "react-to-text";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import deletePostInteractor from "../app/deletePostInteractor";
+import getUsersPostsInteractor from "../app/getUsersPostsInteractor";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -21,19 +23,7 @@ const Profile = () => {
 
     (async () => {
       try {
-        const res = await fetch(
-          `${process.env.REACT_APP_REQUEST_URL}/api/posts/getUsersPosts`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: Cookies.get("access_token"),
-            }),
-          }
-        );
-        const json = await res.json();
+        const json = await getUsersPostsInteractor(Cookies.get("access_token"));
         if (json.success) {
           setPosts(json.data);
         }
@@ -46,21 +36,7 @@ const Profile = () => {
   const handleDelete = async (e: MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
     e.currentTarget.nextElementSibling?.classList.remove("opacity-0");
-    const res = await fetch(
-      `${process.env.REACT_APP_REQUEST_URL}/api/posts/deletePost/${id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          post_id: id,
-          token: Cookies.get("access_token"),
-        }),
-      }
-    );
-
-    const json = await res.json();
+    const json = await deletePostInteractor(id, Cookies.get("access_token"));
     if (json.success) {
       setPosts((prev) => {
         const temp = prev?.filter((post) => post._id !== id);
