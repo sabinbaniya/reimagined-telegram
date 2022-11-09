@@ -1,40 +1,10 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import type { ReactNode, Dispatch, SetStateAction } from "react";
+import type { ReactNode } from "react";
 import cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
-
-interface UserData {
-  github_join_date: string;
-  iat: number;
-  image: string;
-  name: string;
-  uid: number;
-}
-interface User {
-  data: null | UserData;
-  state: "loading" | "authenticated" | "unauthenticated";
-}
-
-interface UserContext {
-  user: User;
-  setUser: Dispatch<SetStateAction<User>>;
-}
-
-export function parseJwt(token: string) {
-  var base64Url = token.split(".")[1];
-  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  var jsonPayload = decodeURIComponent(
-    window
-      .atob(base64)
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
-  );
-
-  return JSON.parse(jsonPayload);
-}
+import { User, UserContext } from "../types/User";
+import parseJwt from "../helpers/parseJwt";
+import authInteractor from "../app/authInteractor";
 
 const userContext = createContext({} as UserContext);
 
@@ -48,17 +18,7 @@ const UserContextProvider = ({ children }: { children: ReactNode }) => {
     if (code) {
       (async () => {
         try {
-          const res = await fetch(
-            `${process.env.REACT_APP_REQUEST_URL}/api/auth/github`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ code }),
-            }
-          );
-          const json = await res.json();
+          const json = await authInteractor(code);
           if (json.status === "success") {
             setUser((prev) => {
               return {

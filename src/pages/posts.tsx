@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import type { BlogPost } from ".";
+import type { BlogPost } from "../types/Posts";
 import { ClipLoader } from "react-spinners";
 import MDEditor from "@uiw/react-md-editor";
 import { useUserContext } from "../context/CurrentUserContext";

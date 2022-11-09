@@ -4,7 +4,7 @@ import type { MouseEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/CurrentUserContext";
 import Cookies from "js-cookie";
-import { BlogPost } from ".";
+import { BlogPost } from "../types/Posts";
 import { ClipLoader } from "react-spinners";
 import reactToText from "react-to-text";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";

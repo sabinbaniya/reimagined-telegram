@@ -3,19 +3,8 @@ import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import reactToText from "react-to-text";
 import { Link } from "react-router-dom";
-
-export interface BlogPost {
-  body: string;
-  createdAt: string;
-  image: string;
-  name: string;
-  title: string;
-  uid: number;
-  updatedAt: string;
-  _id: string;
-  __v: number;
-  visibility: "private" | "public";
-}
+import getAllPostsInteractor from "../app/getAllPostsInteractor";
+import { BlogPost } from "../types/Posts";
 
 const Index = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[] | null>(null);
@@ -29,10 +18,8 @@ const Index = () => {
   useEffect(() => {
     setBlogPosts(null);
     (async () => {
-      const res = await fetch(
-        `${process.env.REACT_APP_REQUEST_URL}/api/posts/getAllPosts?page=${pagination.page}`
-      );
-      const json: { success: boolean; data: BlogPost[] } = await res.json();
+      const json: { success: boolean; data: BlogPost[] } =
+        await getAllPostsInteractor(pagination.page);
       if (json.data.length === 0) {
         setPagination((prev) => {
           return {

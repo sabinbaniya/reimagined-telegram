@@ -4,8 +4,11 @@ import MDEditor from "@uiw/react-md-editor";
 import Cookies from "js-cookie";
 import { useUserContext } from "../context/CurrentUserContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { BlogPost } from ".";
+import type { BlogPost } from "../types/Posts";
 import { ClipLoader } from "react-spinners";
+import updatePostPersistance from "../app/updatePostPersistance";
+import createPostPersistance from "../app/createPostPersistance";
+import getPostDetailInteractor from "../app/getPostDetailInteractor";
 
 const Create = () => {
   const [value, setValue] = useState<string | undefined>();
@@ -40,41 +43,24 @@ const Create = () => {
       try {
         (async () => {
           // console.log(val);
-          let res;
+          let json;
           if (!postId) {
-            res = await fetch(
-              `${process.env.REACT_APP_REQUEST_URL}/api/posts/create`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  _id: postId,
-                  text: val,
-                  title: titleInputRef.current?.innerText,
-                  token: Cookies.get("access_token"),
-                }),
-              }
+            json = await createPostPersistance(
+              postId,
+              Cookies.get("access_token") || "",
+              val,
+              titleInputRef.current?.innerText
             );
           } else {
-            res = await fetch(
-              `${process.env.REACT_APP_REQUEST_URL}/api/posts/update`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  _id: postId,
-                  text: val,
-                  token: Cookies.get("access_token"),
-                }),
-              }
+            json = await updatePostPersistance(
+              postId,
+              Cookies.get("access_token") || "",
+              undefined,
+              undefined,
+              val
             );
           }
 
-          const json = await res.json();
           if (json.success) {
             setApiStatus("Saved");
             if (json.created) {
@@ -119,22 +105,13 @@ const Create = () => {
       (async () => {
         // console.log(val);
         try {
-          const res = await fetch(
-            `${process.env.REACT_APP_REQUEST_URL}/api/posts/update`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                _id: postId,
-                title: titleInputRef.current?.innerText || "No title",
-                token: Cookies.get("access_token"),
-              }),
-            }
+          // if(!titleInputRef.current) return;
+          const json = await updatePostPersistance(
+            postId,
+            Cookies.get("access_token") || "",
+            undefined,
+            titleInputRef.current?.innerText
           );
-
-          const json = await res.json();
           if (json.success) {
             setApiStatus("Saved");
           } else {
@@ -173,23 +150,11 @@ const Create = () => {
 
       try {
         (async () => {
-          // console.log(val);
-          const res = await fetch(
-            `${process.env.REACT_APP_REQUEST_URL}/api/posts/update`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                _id: postId,
-                privateVisibility: !privateVisibility.data,
-                token: Cookies.get("access_token"),
-              }),
-            }
+          const json = await updatePostPersistance(
+            postId,
+            Cookies.get("access_token") || "",
+            privateVisibility.data
           );
-
-          const json = await res.json();
           if (json.success) {
             if (json.data.visibility === privateVisibility.data) {
               setApiStatus("Error Occured, When trying to save");
@@ -239,22 +204,11 @@ const Create = () => {
     if (postId?.length === 24 && !post) {
       (async () => {
         try {
-          // console.log("called");
-          const res = await fetch(
-            `${process.env.REACT_APP_REQUEST_URL}/api/posts/create/getPostDetail/${postId}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                token: Cookies.get("access_token"),
-              }),
-            }
-          );
           const json: { success: boolean; data: BlogPost | string } =
-            await res.json();
-          // console.log(json);
+            await getPostDetailInteractor(
+              postId,
+              Cookies.get("access_token") || ""
+            );
           if (json.success === true) {
             if (
               json.data === "Post is private" ||
