@@ -14,7 +14,7 @@ const updatePostPersistance = async (
     };
 
     if (typeof privateVisibility !== "undefined")
-      bodyToSend["privateVisibilty"] = !privateVisibility;
+      bodyToSend["privateVisibility"] = !privateVisibility;
     if (typeof title !== "undefined") bodyToSend["title"] = title;
     if (typeof text !== "undefined") bodyToSend["text"] = text;
 

@@ -14,7 +14,7 @@ export interface BlogPost {
 export interface UpdateBlogPost {
   _id: string;
   token: string;
-  privateVisibilty?: boolean;
+  privateVisibility?: boolean;
   title?: string;
   text?: string;
 }
